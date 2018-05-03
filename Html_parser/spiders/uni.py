@@ -28,6 +28,8 @@ class uniSpider(scrapy.Spider):
 		item = HtmlParserItem()
 		item['vardas_pavarde'] = name.strip()
 		item['d_tema'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "Preliminari")]/text()').extract()
-		item['vadovas'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "Vadovas")]/descendant-or-self::text()').extract()[1]
+		item['vadovas'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "Vadovas")]/descendant::text()').extract()[1]
+		if '\xa0' in item['vadovas']:
+			item['vadovas'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "Vadovas")]/descendant::text()').extract()[2]
 		item['stud_metai'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "laikas")]/text()').extract()
 		return item
