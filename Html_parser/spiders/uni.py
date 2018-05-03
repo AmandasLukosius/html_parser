@@ -20,12 +20,13 @@ class uniSpider(scrapy.Spider):
 		doktorantai = response.xpath('//li[@class="cat-list-row1 clearfix" and contains(h3, "Doktorantai")]/ul/li[contains(@class, "cat-list-row0 clearfix")]/h3/a/@href').extract()
 		for d in doktorantai:
 			url = urljoin(domain, d)
-			yield scrapy.Request(url, callback=self.parse_doktorantus)
+			name = response.xpath('//li[@class="cat-list-row1 clearfix" and contains(h3, "Doktorantai")]/ul/li[contains(@class, "cat-list-row0 clearfix")]/h3/a/text()').extract()[doktorantai.index(d)]
+			yield scrapy.Request(url, meta={'name': name}, callback=self.parse_doktorantus)
 
 	def parse_doktorantus(self, response):
-		# for titles in response.xpath('//div[contains(@class, "category-headline-item")]'):
+		name = response.meta['name']
 		item = HtmlParserItem()
-		item['vardas_pavarde'] = response.xpath('//*[@id="page-component"]/div/div[3]/p/strong/text()').extract()
+		item['vardas_pavarde'] = name.strip()
 		item['d_tema'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "tema")]/text()').extract()
 		item['vadovas'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "Vadovas")]/text()').extract()
 		item['stud_metai'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "laikas")]/text()').extract()
