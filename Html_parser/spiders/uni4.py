@@ -9,7 +9,7 @@ class uniSpider(scrapy.Spider):
 	
 	def start_requests(self):
 		urls = [
-		'https://www.mii.lt/struktura/darbuotojai/pagal-pareigas'
+		'https://www.mii.lt/doktorantura/doktorantu-sarasai'
 		]
 
 		for url in urls:

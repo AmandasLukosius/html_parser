@@ -24,12 +24,41 @@ class uniSpider(scrapy.Spider):
 			yield scrapy.Request(url, meta={'name': name}, callback=self.parse_doktorantus)
 
 	def parse_doktorantus(self, response):
+		domain = 'https://www.mii.lt'
 		name = response.meta['name']
 		item = HtmlParserItem()
 		item['vardas_pavarde'] = name.strip()
-		item['d_tema'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "Preliminari")]/text()').extract()
-		item['vadovas'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "Vadovas")]/descendant::text()').extract()[1]
+
+		sarasas = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "Preliminari")]/descendant::text()').extract()
+		item['d_tema'] = sarasas[-1]
+		# if not item['d_tema']:
+		# 	item['d_tema'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "Preliminari")]/descendant::text()').extract()[1]
+		# 	if not item['d_tema']:
+		# 		item['d_tema'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "Preliminari")]/descendant::text()').extract()[2]
+
+		try:
+			item['vadovas'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "Vadovas")]/descendant::text()').extract()[1]
+		except:
+			item['vadovas'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "Vadovas")]/a/text()').extract()
+
 		if '\xa0' in item['vadovas']:
 			item['vadovas'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "Vadovas")]/descendant::text()').extract()[2]
-		item['stud_metai'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "laikas")]/text()').extract()
+
+		metai = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "Studij")]/descendant::text()').extract()
+		metai =  list(filter(None, metai))
+		item['stud_metai'] = metai
+
+		url = response.xpath('//*[@id="disertacija"]/div/p[contains(strong, "Vadovas")]/a/@href').extract()
+		new_url = urljoin(domain, url)
+		# yield scrapy.Request(new_url, callback=self.parse_vadova)
 		return item
+
+	# def parse_vadova(self, response):
+	# 	item = HtmlParserItem()
+	# 	item['v_padalinys'] = response.xpath('//*[@id="page-component"]/div/div[3]/p[contains(text(), "Padalinys")]/a/text()').extract()
+	# 	item['v_pareigos'] = response.xpath('//*[@id="page-component"]/div/div[3]/p[3]/text()[2]').extract()
+	# 	item['v_adresas'] = response.xpath('//*[@id="page-component"]/div/div[3]/p[contains(text(), "Dirba")]/text()').extract_first()
+	# 	item['v_telefonas'] = response.xpath('//*[@id="page-component"]/div/div[3]/p[contains(text(), "Telefonas")]/text()').extract()
+	# 	item['v_e_pastas'] = response.xpath('//*[@id="page-component"]/div/div[3]/p[contains(text(), "Elektroninis")]/a[1]/text()').extract()
+	# 	item['v_puslapis'] = response.xpath('//*[@id="page-component"]/div/div[3]/p[contains(text(), "puslapis")]/text()[5]').extract()
+	# 	return item
