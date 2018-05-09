@@ -31,10 +31,6 @@ class uniSpider(scrapy.Spider):
 
 		sarasas = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "Preliminari")]/descendant::text()').extract()
 		item['d_tema'] = sarasas[-1]
-		# if not item['d_tema']:
-		# 	item['d_tema'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "Preliminari")]/descendant::text()').extract()[1]
-		# 	if not item['d_tema']:
-		# 		item['d_tema'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "Preliminari")]/descendant::text()').extract()[2]
 
 		try:
 			item['vadovas'] = response.xpath('//div[@id="doktoranturos-studijos"]/div/p[contains(strong, "Vadovas")]/descendant::text()').extract()[1]
