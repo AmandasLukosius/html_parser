@@ -20,10 +20,10 @@ class HtmlParserItem(scrapy.Item):
 
     # Vadovai
     vadovas = scrapy.Field()
-    v_padalinys = scrapy.Field()
-    v_pareigos = scrapy.Field()
-    v_adresas = scrapy.Field()
-    v_telefonas = scrapy.Field()
-    v_e_pastas = scrapy.Field()
-    v_puslapis = scrapy.Field()
+    # v_padalinys = scrapy.Field()
+    # v_pareigos = scrapy.Field()
+    # v_adresas = scrapy.Field()
+    # v_telefonas = scrapy.Field()
+    # v_e_pastas = scrapy.Field()
+    # v_puslapis = scrapy.Field()
     pass

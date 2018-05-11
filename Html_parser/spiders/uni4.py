@@ -18,7 +18,7 @@ class uniSpider(scrapy.Spider):
 	def parse(self, response):
 		puslapiai = response.xpath('//div[contains(@class, "accordion-heading panel-heading")]/a/@href').extract()
 		for p in puslapiai:
-			yield scrapy.Request(p, callback=self.parse_puslapius, dont_filter = True)
+			yield scrapy.Request(p, callback=self.parse_puslapius)
 
 	def parse_puslapius(self, response):
 		doktorantai = response.xpath('//div[contains(@class, "accordion-inner panel-body")]/table//tr')
